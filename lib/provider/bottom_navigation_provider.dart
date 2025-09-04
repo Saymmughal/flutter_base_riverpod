@@ -7,20 +7,25 @@ import 'package:flutter_base_riverpod/view/screens/menu_screen/menu_screeen.dart
 class BottomNavigationState {
   final int currentIndex;
   final List<Widget> bottomNavigationIndex;
+  final List<String> bottomNavigationIndexNameList;
 
-  const BottomNavigationState({
+  BottomNavigationState({
     this.currentIndex = 0,
+    required this.bottomNavigationIndexNameList,
     required this.bottomNavigationIndex,
   });
 
   BottomNavigationState copyWith({
     int? currentIndex,
     List<Widget>? bottomNavigationIndex,
+    List<String>? bottomNavigationIndexNameList,
   }) {
     return BottomNavigationState(
       currentIndex: currentIndex ?? this.currentIndex,
       bottomNavigationIndex:
           bottomNavigationIndex ?? this.bottomNavigationIndex,
+      bottomNavigationIndexNameList:
+          bottomNavigationIndexNameList ?? this.bottomNavigationIndexNameList,
     );
   }
 }
@@ -29,8 +34,9 @@ class BottomNavigationState {
 class BottomNavigationNotifier extends StateNotifier<BottomNavigationState> {
   BottomNavigationNotifier()
     : super(
-        const BottomNavigationState(
+        BottomNavigationState(
           bottomNavigationIndex: [HomeScreen(), MenuScreen()],
+          bottomNavigationIndexNameList: ['Home', 'Menu'],
         ),
       );
 
@@ -68,4 +74,8 @@ final currentIndexProvider = Provider<int>((ref) {
 
 final bottomNavigationIndexProvider = Provider<List<Widget>>((ref) {
   return ref.watch(bottomNavigationStateProvider).bottomNavigationIndex;
+});
+
+final bottomNavigationIndexNameProvider = Provider<List<String>>((ref) {
+  return ref.watch(bottomNavigationStateProvider).bottomNavigationIndexNameList;
 });

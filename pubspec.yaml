@@ -82,7 +82,7 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   assets:
-    - assets/images/
+    # - assets/images/
     - assets/icons/
     - assets/fonts/
     - .env

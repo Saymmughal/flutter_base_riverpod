@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_base_riverpod/data/db/shared-preferences.dart';
 import 'package:flutter_base_riverpod/utils/app_styles/app_theme_data.dart';
+import 'package:flutter_base_riverpod/utils/app_styles/colors.dart';
 import 'package:flutter_base_riverpod/utils/env_configuration/load_env_file.dart';
+import 'package:flutter_base_riverpod/utils/performance_monitor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_base_riverpod/helper/routes_helper.dart';
 import 'package:flutter_base_riverpod/helper/scroll_behaviour.dart';
@@ -15,6 +20,15 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Load environment variables
   await LoadEnvFile.load();
+
+  // Initialize optimized SharedPreferences cache in background
+  // Use unawaited to prevent blocking app startup
+  unawaited(LocalDb.initializeCache());
+
+  // Initialize performance monitoring
+  PerformanceMonitor.instance.initialize();
+
+
   // For Firebase Initialization
   // await Firebase.initializeApp(
   //   options: DefaultFirebaseOptions.currentPlatform,
@@ -25,11 +39,25 @@ Future<void> main() async {
   // FirebaseMessaging.instance.requestPermission();
   // To initialize Push notifications
   // await NotificationService().initialize();
-
+// To edge to edge for android 15 and above ============================>
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  // Optional: match system bar icon brightness to your theme dynamically.
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: AppColors.transparentColor,
+      systemNavigationBarColor: AppColors.transparentColor,
+    ),
+  );
+  // To allow all orientation
+  // if you don't want portraitDown but all other orientation then
+  // remove SystemChrome.setPreferredOrientations
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
   ]);
+
   runApp(const ProviderScope(child: MyApp()));
 }
 

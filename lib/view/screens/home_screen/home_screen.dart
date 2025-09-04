@@ -5,7 +5,6 @@ import 'package:flutter_base_riverpod/view/widgets/prrimary_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_base_riverpod/view/widgets/extention/string_extension.dart';
 import 'package:flutter_base_riverpod/view/widgets/extention/widget_extension.dart';
-import 'package:flutter_base_riverpod/view/widgets/theme_toggle_widget.dart';
 import 'package:flutter_base_riverpod/utils/app_styles/style.dart';
 import 'package:flutter_base_riverpod/utils/app_styles/app_theme_colors.dart';
 import 'package:flutter_base_riverpod/provider/theme_provider.dart';
@@ -35,15 +34,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final currentThemeMode = ref.watch(currentThemeModeProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: 'Home'.toText(fontSize: 18, fontWeight: AppStyle.w600),
-        centerTitle: true,
-        backgroundColor: AppThemeColors.getSurface(currentThemeMode),
-        actions: [const ThemeToggleWidget(), 8.width],
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(16),
+    return SingleChildScrollView(
+      child: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

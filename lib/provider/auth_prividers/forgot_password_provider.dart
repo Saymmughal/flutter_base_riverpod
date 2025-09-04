@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base_riverpod/data/model/auth_model/forgot_password_model.dart';
-import 'package:flutter_base_riverpod/helper/connection_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_base_riverpod/data/repository/api_repo.dart';
 import 'package:flutter_base_riverpod/helper/router_navigator.dart';
@@ -93,11 +92,6 @@ class ForgotPasswordNotifier extends StateNotifier<ForgotPasswordState> {
       return;
     }
     setLoading(true);
-    bool isConnected = ConnectionManager().showInternetError();
-    if (!isConnected) {
-      setLoading(false);
-      return;
-    }
     
     debugPrint("isLoading: ${state.isLoading}");
     debugPrint("Forgot Password API called with email: $email");

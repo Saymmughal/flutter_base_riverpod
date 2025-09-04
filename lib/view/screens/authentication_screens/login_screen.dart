@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_base_riverpod/utils/app_styles/colors.dart';
+import 'package:flutter_base_riverpod/helper/router_navigator.dart';
+import 'package:flutter_base_riverpod/helper/routes_helper.dart';
 import 'package:flutter_base_riverpod/utils/app_styles/style.dart';
+import 'package:flutter_base_riverpod/utils/dimension_manager.dart';
+import 'package:flutter_base_riverpod/utils/font_scaling_manager.dart';
+import 'package:flutter_base_riverpod/view/widgets/extention/annotated_widget.dart';
 import 'package:flutter_base_riverpod/view/widgets/extention/string_extension.dart';
 import 'package:flutter_base_riverpod/view/widgets/extention/widget_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,6 +34,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    // Initialize dimension manager and font scaling
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      DimensionManager.instance.initialize(context);
+      FontScalingManager.instance.preCalculateCommonSizes();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Update dimension manager when screen size changes
+    DimensionManager.instance.forceRefresh(context);
   }
 
   @override
@@ -47,94 +62,109 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     // final error = ref.watch(errorProvider);
     final currentThemeMode = ref.watch(currentThemeModeProvider);
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: AppColors.systemUiOverlayStyle(context),
-      child: Scaffold(
-        key: scaffoldKey,
-        // resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          title: 'Login'.toText(),
-          centerTitle: true,
-          backgroundColor: AppThemeColors.getSurface(currentThemeMode),
-          actions: [const ThemeToggleWidget(), const SizedBox(width: 8)],
-        ),
-        body: SafeArea(
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // App Logo/Title
-                'Welcome Back'.toText(
-                  fontSize: 28,
-                  fontWeight: AppStyle.w700,
-                  textAlign: TextAlign.center,
-                ),
-                20.height,
-                'Sign in to continue'.toText(
-                  fontSize: 16,
-                  color: AppThemeColors.getTextOnSurface(
-                    currentThemeMode,
-                  ).withValues(alpha: 179),
-                  textAlign: TextAlign.center,
-                ),
-                40.height,
+    return annotatedRegionWidget(
+      context: context,
+      child: OrientationBuilder(
+        builder: (context, orientation) {
+          // Mark dimension manager for refresh on orientation change
+          DimensionManager.instance.markForRefresh();
+          // Clear font scaling cache on orientation change
+          FontScalingManager.instance.clearCache();
 
-                // Email Field
-                CustomTextField(
-                  controller: loginState.loginEmailController,
-                  hintText: 'Email',
-                  textInputType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  validator: (value) => Validation.emailValidation(value),
-                  label: 'Email',
-                ),
-                20.height,
+          return Scaffold(
+            key: scaffoldKey,
+            extendBody: true,
+            extendBodyBehindAppBar: true,
+            // resizeToAvoidBottomInset: true,
+            appBar: AppBar(
+              title: 'Login'.toText(),
+              centerTitle: true,
+              backgroundColor: AppThemeColors.getSurface(currentThemeMode),
+              actions: [const ThemeToggleWidget(), const SizedBox(width: 8)],
+            ),
+            body: SafeArea(
+              child: Form(
+                key: formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // App Logo/Title
+                      'Welcome Back'.toText(
+                        fontSize: 28,
+                        fontWeight: AppStyle.w700,
+                        textAlign: TextAlign.center,
+                      ),
+                      20.height,
+                      'Sign in to continue'.toText(
+                        fontSize: 16,
+                        color: AppThemeColors.getTextOnSurface(
+                          currentThemeMode,
+                        ).withValues(alpha: 179),
+                        textAlign: TextAlign.center,
+                      ),
+                      40.height,
 
-                // Password Field
-                CustomTextField(
-                  controller: loginState.loginPasswordController,
-                  hintText: 'Password',
-                  obscureText: true,
-                  textInputType: TextInputType.visiblePassword,
-                  textInputAction: TextInputAction.done,
-                  validator: (value) => Validation.passwordValidation(value),
-                  label: 'Password',
-                ),
-                30.height,
+                      // Email Field
+                      CustomTextField(
+                        controller: loginState.loginEmailController,
+                        hintText: 'Email',
+                        textInputType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        validator: (value) => Validation.emailValidation(value),
+                        label: 'Email',
+                      ),
+                      20.height,
 
-                // Login Button
-                PrimaryButton(
-                  buttonName: isLoading
-                      ? 'Signing In...'
-                      : AppConstant.loginText,
-                  onPressed: isLoading
-                      ? () {}
-                      : () {
-                          if (formKey.currentState!.validate()) {
-                            loginNotifier.login();
-                          }
-                        },
-                ),
-                20.height,
+                      // Password Field
+                      CustomTextField(
+                        controller: loginState.loginPasswordController,
+                        hintText: 'Password',
+                        obscureText: true,
+                        textInputType: TextInputType.visiblePassword,
+                        textInputAction: TextInputAction.done,
+                        validator: (value) =>
+                            Validation.passwordValidation(value),
+                        label: 'Password',
+                      ),
+                      30.height,
 
-                // Forgot Password
-                'Forgot Password?'
-                    .toText(
-                      fontSize: 16,
-                      color: AppThemeColors.getPrimary(currentThemeMode),
-                      fontWeight: AppStyle.w500,
-                    )
-                    .onPress(() {
-                      // Implement forgot password functionality
-                      // For example, navigate to a Forgot Password screen
-                    })
-                    .center,
-              ],
-            ).paddingSymmetric(horizontal: 20.w),
-          ),
-        ),
+                      // Login Button
+                      PrimaryButton(
+                        buttonName: isLoading
+                            ? 'Signing In...'
+                            : AppConstant.loginText,
+                        onPressed: isLoading
+                            ? () {}
+                            : () {
+                                if (formKey.currentState!.validate()) {
+                                  loginNotifier.login();
+                                }
+                              },
+                      ),
+                      20.height,
+
+                      // Forgot Password
+                      'Forgot Password?'
+                          .toText(
+                            fontSize: 16,
+                            color: AppThemeColors.getPrimary(currentThemeMode),
+                            fontWeight: AppStyle.w500,
+                          )
+                          .onPress(() {
+                            goReplacementNamed(RouterHelper.mainScreen);
+                            // Implement forgot password functionality
+                            // For example, navigate to a Forgot Password screen
+                          })
+                          .center,
+                    ],
+                  ).paddingSymmetric(horizontal: 20.w),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

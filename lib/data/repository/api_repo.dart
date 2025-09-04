@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_base_riverpod/helper/connection_manager.dart';
 import 'package:flutter_base_riverpod/utils/constant.dart';
 import 'package:flutter_base_riverpod/view/widgets/extention/object_extension.dart';
 import 'package:flutter_base_riverpod/view/widgets/show_message_dialog.dart';
@@ -8,7 +9,8 @@ import '../db/shared-preferences.dart';
 import 'dart:async';
 
 // Dio Initialization
-final Dio dio = Dio();
+final Dio dio = Dio()
+  ..interceptors.add(ConnectionManager().createConnectionInterceptor());
 
 class ApiRepo {
   // Set BaseOption for Api Request

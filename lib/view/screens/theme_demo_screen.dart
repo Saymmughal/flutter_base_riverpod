@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_base_riverpod/utils/app_styles/style.dart';
+import 'package:flutter_base_riverpod/utils/dimension.dart';
 import 'package:flutter_base_riverpod/view/widgets/extention/int_extension.dart';
+import 'package:flutter_base_riverpod/view/widgets/extention/widget_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_base_riverpod/provider/theme_provider.dart';
 import 'package:flutter_base_riverpod/view/widgets/theme_toggle_widget.dart';
@@ -21,7 +23,6 @@ class ThemeDemoScreen extends ConsumerWidget {
         actions: [const ThemeToggleWidget(), 16.width],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -192,7 +193,7 @@ class ThemeDemoScreen extends ConsumerWidget {
             ),
             32.height,
           ],
-        ),
+        ).paddingSymmetric(horizontal: isLandscapePossible ? 50.w : 20.w),
       ),
     );
   }

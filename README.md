@@ -10,21 +10,58 @@ A professional Flutter application template built with modern architecture patte
 - **⚡ High Performance** - Optimized rendering with minimal rebuilds
 - **🔒 Authentication Ready** - Login screen with proper validation
 - **📊 State Management** - Riverpod for efficient state management
-- **💾 Local Storage** - SharedPreferences for persistent data
+- **💾 Local Storage** - Persistent local data storage with performance optimizations
 - **🎯 Navigation** - Custom bottom navigation with smooth transitions
+- **Cached Operations**: Background thread operations to prevent main thread blocking
+- **Advanced Performance**: Further optimization for large-scale apps
 
 ### 🎨 Theme System
 - **System Theme Detection** - Automatically follows device theme preference
 - **Manual Theme Selection** - Light, Dark, and System modes
 - **Persistent Theme Storage** - Remembers user's theme choice
 - **Material 3 Design** - Modern Material Design implementation
-- **Performance Optimized** - Smart caching and efficient rebuilds
+- **Performance Optimized** - Cached calculations and background operations
 
 ### 🏗️ Architecture
 - **Clean Architecture** - Separation of concerns with proper layers
 - **Provider Pattern** - Riverpod for dependency injection
 - **Repository Pattern** - Abstracted data access layer
 - **Custom Extensions** - Flutter extensions for better development experience
+
+## 🔗 Network Management
+
+### Connection Manager
+- **Real-time Monitoring**: Continuous internet connectivity tracking
+- **Active Connection Check**: Verifies actual internet access
+- **User Feedback**: Informs users about connection status
+- **Error Handling**: Graceful handling of network issues
+- **Performance Optimized**: Debounced connection checks to prevent frame skipping
+- **Asynchronous UI Updates**: Non-blocking UI operations during connection changes
+
+### Network Features
+- **Connectivity Detection**: WiFi, mobile, and no connection states
+- **Internet Validation**: Ensures actual internet access, not just network presence
+- **Stream-based Updates**: Real-time connection status updates
+- **User Notifications**: Clear feedback about network issues
+- **Smart Toast Management**: Proper toast dismissal and state management
+## ⚡ Performance Optimizations
+
+### Main Thread Optimization
+- **Cached Calculations**: Screen dimensions and font scaling cached to prevent repeated calculations
+- **Background Operations**: SharedPreferences and network operations run off main thread
+- **Debounced Checks**: Connection state changes debounced to prevent excessive network calls
+- **Asynchronous UI Updates**: UI operations scheduled after current frame to prevent blocking
+
+### Memory Management
+- **Smart Caching**: Dimension and font calculations cached with automatic invalidation
+- **Resource Cleanup**: Proper disposal of timers and streams
+- **Efficient State Management**: Optimized provider updates to reduce rebuilds
+
+### Performance Monitoring
+- **Frame Rate Tracking**: Real-time monitoring of dropped frames in debug mode
+- **Performance Metrics**: FPS and frame time monitoring
+- **Debug Logging**: Comprehensive logging for performance analysis
+
 
 ## 📁 Project Structure
 
@@ -204,6 +241,43 @@ extension ColorExtension on Color {
   }
 }
 ```
+
+### API Calls
+```dart
+// Make API request
+final response = await ApiRepo().postRequest(
+  url: 'https://api.example.com/endpoint',
+  data: {'key': 'value'},
+);
+
+// Handle response
+if (response != null) {
+  // Process successful response
+}
+```
+
+### Local Storage
+```dart
+// Store data
+await LocalDb.storeBearerToken('your_token');
+await LocalDb.storeUserData(userData);
+
+// Retrieve data
+final token = await LocalDb.getBearerToken;
+final userData = await LocalDb.getUserData;
+```
+
+### Performance Monitoring
+```dart
+// Check performance metrics
+final metrics = PerformanceMonitor.instance.getPerformanceMetrics();
+PerformanceMonitor.instance.logPerformanceMetrics();
+
+// Connection management
+bool isConnected = ConnectionManager().isConnected;
+await ConnectionManager().refreshConnectionState();
+```
+
 
 ## 🔧 Configuration
 
